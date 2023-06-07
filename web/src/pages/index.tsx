@@ -1,5 +1,6 @@
-import { AuthContext } from '@/contexts/AuthContext';
 import { FormEvent, useContext, useState } from 'react';
+import { AuthContext } from '@/contexts/AuthContext';
+import { withSSRGuest } from '@/utils/withSSRGuest';
 
 export default function Home() {
   const [email, setEmail] = useState('');
@@ -15,30 +16,43 @@ export default function Home() {
       password,
     };
 
-    await signIn(data)
+    await signIn(data);
   }
 
   return (
     <section className="mt-5 flex flex-1 items-center justify-center">
-      <form className="max-w-xs block space-y-2.5" onSubmit={handleSubmit}>
+      <form className="block max-w-xs space-y-2.5" onSubmit={handleSubmit}>
         <input
           type="email"
           value={email}
-          placeholder='e-mail'
+          placeholder="e-mail"
           onChange={(e) => setEmail(e.target.value)}
-          className="block bg-zinc-800 rounded text-zinc-100 px-2.5 py-1.5 outline-sky-500"
+          className="block rounded bg-zinc-800 px-2.5 py-1.5 text-zinc-100 outline-sky-500"
         />
 
         <input
           type="password"
           value={password}
-          placeholder='senha'
+          placeholder="senha"
           onChange={(e) => setPassword(e.target.value)}
-          className="block bg-zinc-800 rounded text-zinc-100 px-2.5 py-1.5 outline-sky-500"
+          className="block rounded bg-zinc-800 px-2.5 py-1.5 text-zinc-100 outline-sky-500"
         />
 
-        <button type="submit" className='bg-sky-500 w-full rounded lowercase text-base font-light px-2.5 py-1.5'>Entrar</button>
+        <button
+          type="submit"
+          className="w-full rounded bg-sky-500 px-2.5 py-1.5 text-base font-light lowercase"
+        >
+          Entrar
+        </button>
       </form>
     </section>
   );
 }
+
+export const getServerSideProps = withSSRGuest(async (ctx) => {
+  return {
+    props: {
+      
+    },    
+  };
+});

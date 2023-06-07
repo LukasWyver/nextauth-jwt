@@ -1,17 +1,28 @@
-import { useContext, useEffect } from "react"
-import { AuthContext } from "@/contexts/AuthContext"
-import { api } from "@/services/api";
+import { useContext, useEffect } from 'react';
 
-export default function Dashboard(){
-    const { user } = useContext(AuthContext);
+import { api } from '@/services/apiClient';
+import { AuthContext } from '@/contexts/AuthContext';
+import { withSSRAuth } from '@/utils/withSSRAuth';
+import { setupApiClient } from '@/services/api';
 
-    useEffect(() => { 
-        api.get('/me')
-        .then(response => console.log(response))
-        .catch(err => console.log(err))
-    }, [ ])
+export default function Dashboard() {
+  const { user } = useContext(AuthContext);
 
-    return ( 
-        <h1>Página de Dashboard: {user?.email}</h1>
-    )
+  useEffect(() => {
+    api
+      .get('/me')
+      .then((response) => console.log(response))
+      .catch((err) => console.log(err));
+  }, []);
+
+  return <h1>Página de Dashboard: {user?.email}</h1>;
 }
+
+export const getServerSideProps = withSSRAuth(async (ctx) => {
+  const apiClient = setupApiClient(ctx);
+  const response = await apiClient.get('/me');  
+
+  return {
+    props: {},
+  };
+});
